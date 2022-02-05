@@ -1,21 +1,16 @@
-package main
+package day06
 
 import (
-	"fmt"
-	"io/ioutil"
-	"strconv"
 	"strings"
+
+	"github.com/olacin/advent-of-code/util"
 )
 
-func parseInput(path string) []int {
-	content, _ := ioutil.ReadFile(path)
-	line := strings.Split(string(content), "\n")[0]
-
+func parseInput(lines []string) []int {
 	fishes := make([]int, 0)
 
-	for _, s := range strings.Split(line, ",") {
-		n, _ := strconv.Atoi(s)
-		fishes = append(fishes, n)
+	for _, s := range strings.Split(lines[0], ",") {
+		fishes = append(fishes, util.Atoi(s))
 	}
 
 	return fishes
@@ -52,11 +47,5 @@ func compute(days int, fishes []int) int {
 	return total
 }
 
-func main() {
-	fishes := parseInput("input.txt")
-
-	// Part 1: 351188
-	fmt.Printf("Number of fishes after 80 days: %d\n", compute(80, fishes))
-	// Part 2:
-	fmt.Printf("Number of fishes after 256 days: %d\n", compute(256, fishes))
-}
+// Part 1: 351188
+// Part 2:

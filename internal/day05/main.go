@@ -1,10 +1,7 @@
-package main
+package day05
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
-	"strings"
 )
 
 type Range struct {
@@ -43,7 +40,6 @@ func (l Line) IsStraight() bool {
 func (l Line) IsDiagonal() bool {
 	xabs := Abs(l.X.End - l.X.Start)
 	yabs := Abs(l.Y.End - l.Y.Start)
-	// fmt.Printf("l.X.Start=%d l.X.End=%d l.Y.Start=%d l.Y.End=%d xabs=%d yabs=%d\n", l.X.Start, l.X.End, l.Y.Start, l.Y.End, xabs, yabs)
 	return xabs == yabs
 }
 
@@ -68,16 +64,10 @@ func max(a int, b int) int {
 	return b
 }
 
-func parseInput(path string) ([]Line, error) {
-	_content, _ := ioutil.ReadFile(path)
-	content := strings.Split(string(_content), "\n")
-
+func parseInput(content []string) []Line {
 	var lines []Line
 
 	for _, line := range content {
-		if line == "" {
-			continue
-		}
 		var x1, x2, y1, y2 int
 		fmt.Sscanf(line, "%d,%d -> %d,%d", &x1, &y1, &x2, &y2)
 
@@ -96,7 +86,7 @@ func parseInput(path string) ([]Line, error) {
 		lines = append(lines, l)
 	}
 
-	return lines, nil
+	return lines
 }
 
 func NewFloor(lines []Line) [][]int {
@@ -158,7 +148,7 @@ func Filter(lines []Line, diagonals bool) []Line {
 	return filtered
 }
 
-func part1(lines []Line) [][]int {
+func part1(lines []Line) int {
 	floor := NewFloor(lines)
 
 	for _, l := range lines {
@@ -171,7 +161,7 @@ func part1(lines []Line) [][]int {
 		}
 	}
 
-	return floor
+	return CountOverlaps(floor)
 }
 
 func part2(lines []Line) [][]int {
@@ -192,23 +182,12 @@ func part2(lines []Line) [][]int {
 	return floor
 }
 
-func main() {
-	lines, err := parseInput("input.txt.test")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+// Part 1: 4993
+// floor := part1(lines)
+// PrintFloor(floor)
+// fmt.Printf("Part 1: Overlapping points: %d\n", CountOverlaps(floor))
 
-	// Part 1: 4993
-	// floor := part1(lines)
-	// PrintFloor(floor)
-	// fmt.Printf("Part 1: Overlapping points: %d\n", CountOverlaps(floor))
-
-	// Part 2:
-	floor := part2(lines)
-	PrintFloor(floor)
-	// fmt.Printf("Part 2: Overlapping points: %d\n", CountOverlaps(floor))
-
-	r := Range{8, 2}
-	fmt.Println("r.Slice() = ", r.Slice())
-}
+// Part 2:
+// floor := part2(lines)
+// PrintFloor(floor)
+// fmt.Printf("Part 2: Overlapping points: %d\n", CountOverlaps(floor))

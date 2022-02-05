@@ -1,10 +1,7 @@
-package main
+package day02
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"strconv"
+	"github.com/olacin/advent-of-code/util"
 	"strings"
 )
 
@@ -32,7 +29,7 @@ func (p *Position) Update(m Move) {
 }
 
 // Used for part 2
-func (p *Position) Update2(m Move) {
+func (p *Position) UpdateB(m Move) {
 	switch m.Direction {
 	case "forward":
 		p.Horizontal += m.Amount
@@ -44,30 +41,17 @@ func (p *Position) Update2(m Move) {
 	}
 }
 
-func parseInput(path string) ([]Move, error) {
-	// Open file
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
+func ParseMoves(lines []string) []Move {
 	var moves []Move
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		s := strings.Split(scanner.Text(), " ")
+	for _, line := range lines {
+		s := strings.Split(line, " ")
 
-		amount, err := strconv.Atoi(s[1])
-		if err != nil {
-			return nil, err
-		}
-
-		m := Move{Direction: s[0], Amount: amount}
+		m := Move{Direction: s[0], Amount: util.Atoi(s[1])}
 		moves = append(moves, m)
 	}
 
-	return moves, scanner.Err()
+	return moves
 }
 
 func part1(moves []Move) int {
@@ -81,21 +65,7 @@ func part1(moves []Move) int {
 func part2(moves []Move) int {
 	pos := Position{0, 0, 0}
 	for _, m := range moves {
-		pos.Update2(m)
+		pos.UpdateB(m)
 	}
 	return pos.Horizontal * pos.Depth
-}
-
-func main() {
-	moves, err := parseInput("input.txt")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	// Part 1: 1762050
-	fmt.Printf("Part 1: Position X * Y: %d\n", part1(moves))
-
-	// Part 2: 1855892637
-	fmt.Printf("Part 2: Position X * Y: %d\n", part2(moves))
 }

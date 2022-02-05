@@ -1,12 +1,9 @@
-package main
+package day04
 
 import (
-	"fmt"
-	"github.com/fatih/color"
-	"io/ioutil"
-	"os"
-	"strconv"
 	"strings"
+
+	"github.com/olacin/advent-of-code/util"
 )
 
 type Number struct {
@@ -15,22 +12,6 @@ type Number struct {
 }
 
 type Board [][]Number
-
-func (b Board) Print() {
-	for i, row := range b {
-		for j := range row {
-			if b[i][j].Marked {
-				color.Set(color.FgYellow)
-				fmt.Printf("%-2d ", b[i][j].Value)
-				color.Unset()
-			} else {
-				fmt.Printf("%-2d ", b[i][j].Value)
-			}
-		}
-		fmt.Printf("\n")
-	}
-	fmt.Printf("\n")
-}
 
 func (b Board) Mark(number int) {
 	for i, row := range b {
@@ -86,18 +67,14 @@ func (b Board) HasWon() bool {
 	return false
 }
 
-func parseInput(path string) ([]int, []Board, error) {
-	content, _ := ioutil.ReadFile(path)
-	lines := strings.Split(string(content), "\n")
-
+func parseInput(lines []string) ([]int, []Board) {
 	var draw []int
 	var boards []Board
 	var board Board
 
 	// Parse draw
 	for _, s := range strings.Split(lines[0], ",") {
-		n, _ := strconv.Atoi(s)
-		draw = append(draw, n)
+		draw = append(draw, util.Atoi(s))
 	}
 
 	// Parse boards
@@ -111,14 +88,13 @@ func parseInput(path string) ([]int, []Board, error) {
 
 		row := make([]Number, 0)
 		for _, s := range strings.Fields(line) {
-			n, _ := strconv.Atoi(s)
-			row = append(row, Number{n, false})
+			row = append(row, Number{util.Atoi(s), false})
 		}
 		board = append(board, row)
 	}
 	boards = append(boards, board)
 
-	return draw, boards, nil
+	return draw, boards
 }
 
 func markBoards(number int, boards []Board) {
@@ -136,28 +112,21 @@ func check(boards []Board) (int, Board) {
 	return -1, nil
 }
 
-func main() {
-	numbers, boards, err := parseInput("input.txt")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+func part1(numbers []int, boards []Board) int {
+	var score int
 
-	// Part 1: 16674
 	for _, n := range numbers {
 		markBoards(n, boards)
 		_, b := check(boards)
 		if b != nil {
-			b.Print()
-			fmt.Printf("Part 1: Winning board score: %d\n", b.Score(n))
+			score = b.Score(n)
 			break
 		}
 	}
+	return score
+}
 
-	fmt.Println()
-
-	// Part 2: 7075
-	var winner Board
+func part2(numbers []int, boards []Board) int {
 	var score int
 
 	for len(boards) > 1 {
@@ -165,13 +134,11 @@ func main() {
 			markBoards(n, boards)
 			i, b := check(boards)
 			if b != nil {
-				winner = b
 				score = b.Score(n)
 				boards = append(boards[:i], boards[i+1:]...)
 				break
 			}
 		}
 	}
-	winner.Print()
-	fmt.Printf("Part 2: Winning board score: %d\n", score)
+	return score
 }
