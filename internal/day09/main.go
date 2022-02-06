@@ -1,28 +1,18 @@
-package main
+package day09
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
 	"sort"
-	"strconv"
-	"strings"
+
+	"github.com/olacin/advent-of-code/util"
 )
 
-func parseInput(path string) [][]int {
-	content, _ := ioutil.ReadFile(path)
-	lines := strings.Split(string(content), "\n")
-
+func parseInput(lines []string) [][]int {
 	floor := make([][]int, 0)
 
 	for _, l := range lines {
-		if l == "" {
-			continue
-		}
 		row := make([]int, 0)
 		for _, r := range l {
-			n, _ := strconv.Atoi(string(r))
-			row = append(row, n)
+			row = append(row, util.Atoi(string(r)))
 		}
 		floor = append(floor, row)
 	}
@@ -112,7 +102,7 @@ func DFS(floor [][]int, i int, j int) int {
 	return size
 }
 
-func Part1(floor [][]int) int {
+func part1(floor [][]int) int {
 	points := LowPoints(floor)
 	risk := 0
 
@@ -124,7 +114,7 @@ func Part1(floor [][]int) int {
 	return risk
 }
 
-func Part2(floor [][]int) int {
+func part2(floor [][]int) int {
 	points := LowPoints(floor)
 	basins := make([]int, 0)
 
@@ -138,11 +128,4 @@ func Part2(floor [][]int) int {
 	sort.Sort(sort.Reverse(sort.IntSlice(basins)))
 
 	return basins[0] * basins[1] * basins[2]
-}
-
-func main() {
-	path := os.Args[1]
-	floor := parseInput(path)
-	fmt.Println("Part 1: Risk Level: ", Part1(floor))
-	fmt.Println("Part 2: ", Part2(floor))
 }

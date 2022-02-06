@@ -1,5 +1,10 @@
 package util
 
+import (
+	"math"
+	"sort"
+)
+
 func Sum(input []int) int {
 	s := 0
 	for _, element := range input {
@@ -26,4 +31,32 @@ func Transpose(m [][]rune) [][]rune {
 	}
 
 	return matrix
+}
+
+func Median(s []int) int {
+	sort.Ints(s)
+
+	n := len(s)
+
+	if n%2 == 0 {
+		return (s[n/2] + s[(n/2)-1]) / 2
+	}
+	return s[(n-1)/2]
+}
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func Max(numbers ...int) int {
+	var max = math.MinInt64
+	for _, n := range numbers {
+		if n > max {
+			max = n
+		}
+	}
+	return max
 }

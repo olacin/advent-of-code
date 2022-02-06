@@ -1,24 +1,15 @@
-package main
+package day08
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
 )
 
-func parseInput(path string) [][]string {
-	content, _ := ioutil.ReadFile(path)
-	lines := strings.Split(string(content), "\n")
-
+func parseInput(lines []string) [][]string {
 	entries := make([][]string, 0)
 
 	for _, line := range lines {
-		if line == "" {
-			continue
-		}
 		entry := make([]string, 0)
 		for _, field := range strings.Fields(line) {
 			if field == "|" {
@@ -67,7 +58,7 @@ func translate(entry []string, mapper map[int]string) string {
 	return decoded
 }
 
-func Part1(entries [][]string) int {
+func part1(entries [][]string) int {
 	total := 0
 	counter := make(map[int]int)
 
@@ -107,7 +98,7 @@ func SortEntries(entries [][]string) [][]string {
 	return _entries
 }
 
-func Part2(entries [][]string) int {
+func part2(entries [][]string) int {
 	total := 0
 
 	entries = SortEntries(entries)
@@ -148,11 +139,4 @@ func Part2(entries [][]string) int {
 	}
 
 	return total
-}
-
-func main() {
-	path := os.Args[1]
-	entries := parseInput(path)
-	fmt.Printf("part 1 - total=%d\n", Part1(entries))
-	fmt.Printf("part 2 - total=%d\n", Part2(entries))
 }
