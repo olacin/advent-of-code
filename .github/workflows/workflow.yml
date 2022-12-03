@@ -15,9 +15,10 @@ jobs:
 
       - name: Run tests
         run: make test
+        working-directory: ./2021
 
       - name: Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
-          files: ./coverage.out
+          files: ./2021/coverage.out
           verbose: true
