@@ -73,6 +73,8 @@ branch = true
 parallel = true
 omit = [
   "advent_of_code/__about__.py",
+  "advent_of_code/cli.py",
+  "tests/*.py"
 ]
 
 [tool.coverage.report]
