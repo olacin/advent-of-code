@@ -38,11 +38,11 @@ jobs:
         working-directory: ./2022
 
       - name: Run tests
-        run: hatch run cov
+        run: hatch run codecov
         working-directory: ./2022
 
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
-          files: ./2022/.coverage
+          files: ./2022/coverage.xml
           verbose: true

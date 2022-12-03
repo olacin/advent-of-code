@@ -53,6 +53,7 @@ dependencies = [
 ]
 [tool.hatch.envs.default.scripts]
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=advent_of_code --cov=tests {args}"
+codecov = "cov --cov-report=xml {args}"
 no-cov = "cov --no-cov {args}"
 test = "pytest -o log_cli=true -o log_cli_level=DEBUG"
 check = [
