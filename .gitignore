@@ -2,3 +2,4 @@ coverage.out
 .coverage
 coverage.xml
 .env
+.testmondata
