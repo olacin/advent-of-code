@@ -49,7 +49,8 @@ dependencies = [
   "flake8",
   "bandit[toml]",
   "pytest-watch",
-  "pytest-testmon"
+  "pytest-testmon",
+  "numpy"
 ]
 [tool.hatch.envs.default.scripts]
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=advent_of_code --cov=tests {args}"
