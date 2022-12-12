@@ -1,17 +1,32 @@
+import itertools
 import operator
 from collections import deque
-from operator import itemgetter
 from pathlib import Path
-from typing import Tuple
+from typing import Dict, Tuple
 
 import numpy as np
+from numpy.typing import ArrayLike
 
-DIRECTIONS = [
-    (-1, 0),
-    (0, 1),
-    (1, 0),
-    (0, -1),
-]
+Point = Tuple[int, int]
+
+
+def valid_neighbors(grid: ArrayLike, visited: Dict[Point, Point], cell):
+    def add_tuples(t1: Point, t2: Point):
+        return tuple(map(operator.add, t1, t2))
+
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    neighbors = [add_tuples(cell, dir) for dir in directions]
+    return filter(lambda nb: is_valid(grid, visited, cell, nb), neighbors)
+
+
+def elevation(value: str):
+    match value:
+        case "S":
+            return ord("a")
+        case "E":
+            return ord("z")
+        case _:
+            return ord(value)
 
 
 def read_input(input: Path):
@@ -22,85 +37,71 @@ def read_input(input: Path):
     return np.array(matrix)
 
 
-def find_position(matrix, item):
-    return tuple([itemgetter(0)(coord) for coord in np.where(matrix == item)])
+def find_positions(matrix: ArrayLike, item: str):
+    for coordinates in np.argwhere(matrix == item):
+        yield tuple(coordinates)
 
 
-def add_tuples(t1: Tuple, t2: Tuple):
-    return tuple(map(operator.add, t1, t2))
-
-
-def is_valid(grid, visited, current, next):
-    width, height = visited.shape
+def is_valid(grid, visited: Dict[Point, Point], current: Point, next: Point):
+    width, height = grid.shape
     cx, cy = current
     x, y = next
     # Out of bounds
     if x < 0 or y < 0 or x >= width or y >= height:
-        print(f"{(x, y)} is out of bounds")
         return False
     # Visited
-    if visited[x][y] is True:
-        print(f"{(x, y)} has already been visited")
+    if next in visited:
         return False
     # Height difference
-    if grid[cx][cy] != "S" and ord(grid[x][y]) - ord(grid[cx][cy]) > 1:
-        print(f"{grid[x][y]} - {grid[cx][cy]} diff is too big")
+    if elevation(grid[x][y]) - elevation(grid[cx][cy]) > 1:
         return False
 
     return True
 
 
-def bfs(grid, visited, start):
+def bfs(grid: ArrayLike, start: Point, end: Point):
     q = deque()
-    x, y = start
     q.append(start)
-    visited[x][y] = True
+    visited = {}
+    visited[start] = None
+    cell = None
 
-    print("I am in BFS")
-
-    while len(q) > 0:
-        print(len(q))
+    while q:
         cell = q.popleft()
-        x, y = cell
-        print(grid[x][y], end=" ")
 
-        if grid[x][y] == "E":
-            print("Element has been found")
-            return q
+        if cell == end:
+            break
 
-        for dir in DIRECTIONS:
-            pos = add_tuples(cell, dir)
-            print(f"Checking position: {pos}")
-            if is_valid(grid, visited, cell, pos):
-                print(f"position is valid: {pos}")
-                q.append(pos)
-                visited[pos[0]][pos[1]] = True
-        print(visited)
-        # raise ZeroDivisionError()
+        for pos in valid_neighbors(grid, visited, cell):
+            q.append(pos)
+            visited[pos] = cell
+
+    # Exit early if there's no valid path
+    if cell != end:
+        return None
+
+    # Rebuild path
+    path = []
+    curr = end
+    while curr != start:
+        path.append(curr)
+        curr = visited[curr]
+
+    return path
 
 
 def part1(input: Path):
     matrix = read_input(input)
-    visited = matrix.copy()
-    visited.fill(False)
-    start = find_position(matrix, "S")
-    end = find_position(matrix, "E")
-    print("Matrix")
-    print(matrix)
-    print("Visited")
-    print(visited)
-    print(f"Start: {start}")
-    print(f"End: {end}")
-    q = bfs(matrix, visited, start)
-    # print(q)
-    # raise NotImplementedError()
+    start = next(find_positions(matrix, "S"))
+    end = next(find_positions(matrix, "E"))
+    if path := bfs(matrix, start, end):
+        return len(path)
+    return -1
 
 
 def part2(input: Path):
-    raise NotImplementedError()
-
-
-if __name__ == "__main__":
-    import sys
-
-    part1(Path(sys.argv[1]))
+    matrix = read_input(input)
+    starts = itertools.chain(find_positions(matrix, "S"), find_positions(matrix, "a"))
+    end = next(find_positions(matrix, "E"))
+    paths = filter(None, [bfs(matrix, start, end) for start in starts])
+    return min(map(len, paths))
