@@ -96,7 +96,7 @@ def part1(input: Path):
     end = next(find_positions(matrix, "E"))
     if path := bfs(matrix, start, end):
         return len(path)
-    return -1
+    return -1  # no cov
 
 
 def part2(input: Path):
