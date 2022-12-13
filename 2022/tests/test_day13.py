@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from advent_of_code.day13 import Packet, part1, part2
 
 INPUT = Path(__file__).parent / "data" / "day13.txt"
@@ -17,8 +19,5 @@ def test_part2():
 
 def test_gt():
     assert Packet([[6]]) > Packet([[2]])
-    assert Packet([7, 7]) == Packet([7, 7])
-    assert Packet([8, 7]) > Packet([7, 7, 7])
-    assert Packet([[4, 4], 4, 4, 4]) > Packet([[4, 4], 4, 4])
-    # [[4,4],4,4]
-    # [[4,4],4,4,4]
+    with pytest.raises(ValueError):
+        _ = Packet(dict()) > Packet(dict())

@@ -35,6 +35,10 @@ class Packet:
 
             return len(self.value) > len(b.value)
 
+        raise ValueError(
+            f"Unsupported types: self={type(self.value)} other={type(b.value)}"
+        )
+
     def __str__(self):
         return str(self.value)  # no cov
 
