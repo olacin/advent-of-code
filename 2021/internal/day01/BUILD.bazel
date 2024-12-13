@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "day01",
+    srcs = ["main.go"],
+    importpath = "github.com/olacin/advent-of-code/2021/internal/day01",
+    visibility = ["//2021:__subpackages__"],
+)
+
+go_test(
+    name = "day01_test",
+    srcs = ["main_test.go"],
+    embed = [":day01"],
+    deps = ["@com_github_stretchr_testify//assert:go_default_library"],
+)
